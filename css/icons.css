@@ -1,6 +1,10 @@
-.homework-icon {
+.homework-icon,
+.activity-icon,
+.clock-icon,
+.speech-icon,
+.chat-icon,
+.lit-icon {
   margin-right: 0.4em;
-  font-size: 0.9em;
   opacity: 0.85;
   vertical-align: baseline;
 }
