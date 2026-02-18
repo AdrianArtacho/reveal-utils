@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Reveal Presentation</title>
+
+  <!-- Reveal core -->
+  <link rel="stylesheet" href="./reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="./reveal.js/dist/theme/white.css">
+
+  <!-- Font Awesome (offline) -->
+  <link rel="stylesheet" href="./fa/css/all.min.css">
+
+  <!-- Your overrides -->
+  <link rel="stylesheet" href="./css/icons.css">
+</head>
+
+<body>
+  <div class="reveal">
+    <div class="slides" id="slides"></div>
+  </div>
+
+  <script src="./reveal.js/dist/reveal.js"></script>
+  <script>
+    Reveal.initialize({ hash: true });
+    fetch('../slides.html')
+      .then(r => r.text())
+      .then(html => document.getElementById('slides').innerHTML = html);
+  </script>
+</body>
+</html>
