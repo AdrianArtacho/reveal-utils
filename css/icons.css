@@ -67,3 +67,16 @@ padding:3px;
 border-radius:3px;
 color:red;
 }
+
+.annot-image {
+position: relative;
+display: inline-block;
+}
+
+.annot-image img {
+width:100%;
+}
+
+.annot-image .fragment {
+position:absolute;
+}
