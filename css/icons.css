@@ -10,3 +10,60 @@
   opacity: 0.85;
   vertical-align: baseline;
 }
+
+
+.reveal .replacement-container {
+  position: relative;
+  min-height: 4em;
+}
+
+.reveal .replacement-container .replacement {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+}
+
+
+
+.annot-image {
+position: relative;
+display: inline-block;
+}
+
+.annot-image img {
+width:100%;
+}
+
+.annot-image .fragment {
+position:absolute;
+}
+
+.annot-rect {
+border:3px solid red;
+}
+
+.annot-ellipse {
+border:3px solid red;
+border-radius:50%;
+}
+
+.annot-marker {
+transform:translate(-50%,-50%);
+background:red;
+color:white;
+border-radius:50%;
+width:26px;
+height:26px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:bold;
+}
+
+.annot-text {
+background:rgba(255,255,255,0.8);
+padding:3px;
+border-radius:3px;
+color:red;
+}
