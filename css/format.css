@@ -100,3 +100,35 @@ Image annotation system
 .annot-arrow {
   pointer-events: none;
 }
+
+/* dark marker (filled) */
+
+.annot-marker-dark {
+  transform: translate(-50%, -50%);
+  background: red;
+  color: white;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+}
+
+
+/* light marker (outlined) */
+
+.annot-marker-light {
+  transform: translate(-50%, -50%);
+  border: 3px solid red;
+  color: red;
+  border-radius: 50%;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  background: white;
+}
