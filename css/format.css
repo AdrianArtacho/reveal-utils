@@ -132,3 +132,48 @@ Image annotation system
   font-weight: bold;
   background: white;
 }
+
+/* Tabular */
+
+.reveal table.reveal-table {
+  font-size: 0.65em;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.reveal table.reveal-table td,
+.reveal table.reveal-table th {
+  padding: 0.4em 0.6em;
+  vertical-align: top;
+}
+
+.reveal table.reveal-table th {
+  font-weight: 600;
+}
+
+.reveal table.reveal-table {
+  font-size: 0.65em;
+  width: 100%;
+}
+
+.reveal table.reveal-table {
+  font-size: 0.65em;
+  width: 100%;
+}
+
+.table-fit {
+  width: 100%;
+  max-height: 80vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.table-fit table {
+  width: 100%;
+  font-size: clamp(0.45em, 1.2vw, 0.75em);
+}
+
+.reveal table {
+  margin: 0 auto;
+}
