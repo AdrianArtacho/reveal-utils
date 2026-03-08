@@ -199,7 +199,6 @@ Image annotation system
 
 .annot-highlight{
 position:absolute;
-opacity:0.35;
 border-radius:4px;
 pointer-events:none;
 }
