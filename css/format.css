@@ -248,3 +248,22 @@ pointer-events:none;
 .annot-layer .fragment {
   position: absolute;
 }
+
+/* highlightmove */
+
+.annot-highlight {
+  position: absolute;
+  opacity: 0.35;
+  border-radius: 4px;
+  pointer-events: none;
+
+  transition:
+    left 0.6s ease,
+    top 0.6s ease,
+    width 0.6s ease,
+    height 0.6s ease;
+}
+
+.annot-highlight{
+  background: rgba(255,255,0,0.35);
+}
