@@ -157,15 +157,15 @@ Image annotation system
   font-weight: 600;
 }
 
-.reveal table.reveal-table {
+/* .reveal table.reveal-table {
   font-size: 0.65em;
   width: 100%;
-}
+} */
 
-.reveal table.reveal-table {
+/* .reveal table.reveal-table {
   font-size: 0.65em;
   width: 100%;
-}
+} */
 
 .table-fit {
   width: 100%;
@@ -203,10 +203,18 @@ Image annotation system
 
 /* For highlights (imageannotation) */
 
-.annot-highlight{
-position:absolute;
-border-radius:4px;
-pointer-events:none;
+.annot-highlight {
+  position: absolute;
+  opacity: 0.35;
+  border-radius: 4px;
+  pointer-events: none;
+  background: rgba(255,255,0,0.35);
+
+  transition:
+    left 0.6s ease,
+    top 0.6s ease,
+    width 0.6s ease,
+    height 0.6s ease;
 }
 
 /* Full embeds */
@@ -235,10 +243,10 @@ pointer-events:none;
   border: none;
 }
 
-.annot-image {
+/* .annot-image {
   position: relative;
   display: inline-block;
-}
+} */
 
 .annot-layer {
   position: absolute;
@@ -251,7 +259,7 @@ pointer-events:none;
 
 /* highlightmove */
 
-.annot-highlight {
+/* .annot-highlight {
   position: absolute;
   opacity: 0.35;
   border-radius: 4px;
@@ -262,11 +270,11 @@ pointer-events:none;
     top 0.6s ease,
     width 0.6s ease,
     height 0.6s ease;
-}
+} */
 
-.annot-highlight{
+/* .annot-highlight{
   background: rgba(255,255,0,0.35);
-}
+} */
 
 /* form diagrams */
 
