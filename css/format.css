@@ -301,3 +301,8 @@ Image annotation system
   text-align:center;
   white-space:nowrap;
 }
+
+.annot-oval{
+position:absolute;
+pointer-events:none;
+}
