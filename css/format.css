@@ -39,17 +39,23 @@ Image annotation system
 .annot-image {
   position: relative;
   display: inline-block;
+  line-height: 0;
 }
 
 .annot-image img {
-  width: 100%;
   display: block;
+  width: auto;
+  max-width: 100%;
 }
 
 .annot-image .fragment {
   position: absolute;
 }
 
+.reveal .slides section .annot-image {
+  width: fit-content;
+  margin: 0 auto;
+}
 
 /* rectangle highlight */
 
@@ -151,15 +157,15 @@ Image annotation system
   font-weight: 600;
 }
 
-.reveal table.reveal-table {
+/* .reveal table.reveal-table {
   font-size: 0.65em;
   width: 100%;
-}
+} */
 
-.reveal table.reveal-table {
+/* .reveal table.reveal-table {
   font-size: 0.65em;
   width: 100%;
-}
+} */
 
 .table-fit {
   width: 100%;
@@ -197,21 +203,101 @@ Image annotation system
 
 /* For highlights (imageannotation) */
 
-.annot-highlight{
-position:absolute;
-border-radius:4px;
-pointer-events:none;
+.annot-highlight {
+  position: absolute;
+  opacity: 0.35;
+  border-radius: 4px;
+  pointer-events: none;
+  background: rgba(255,255,0,0.35);
+
+  transition:
+    left 0.6s ease,
+    top 0.6s ease,
+    width 0.6s ease,
+    height 0.6s ease;
 }
 
-/* Moving highlight */
-.replacement-container{
-position:absolute;
-left:0;
-top:0;
-width:100%;
-height:100%;
+/* Full embeds */
+
+.reveal .slides section iframe.fullslide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
-.annot-highlight{
-border-radius:6px;
+
+/* full interactive slides */
+
+.reveal .slides section.full-embed {
+  padding: 0;
+}
+
+.reveal .slides section.full-embed iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+/* .annot-image {
+  position: relative;
+  display: inline-block;
+} */
+
+.annot-layer {
+  position: absolute;
+  inset: 0;
+}
+
+.annot-layer .fragment {
+  position: absolute;
+}
+
+/* highlightmove */
+
+/* .annot-highlight {
+  position: absolute;
+  opacity: 0.35;
+  border-radius: 4px;
+  pointer-events: none;
+
+  transition:
+    left 0.6s ease,
+    top 0.6s ease,
+    width 0.6s ease,
+    height 0.6s ease;
+} */
+
+/* .annot-highlight{
+  background: rgba(255,255,0,0.35);
+} */
+
+/* form diagrams */
+
+.form-diagram{
+  display:flex;
+  width:100%;
+  height:150px;
+  margin:30px 0;
+}
+
+.form-seg{
+  border:2px solid #222;
+  background:#f4f4f4;
+  position:relative;
+}
+
+.form-label{
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%) rotate(-90deg);
+  font-size:0.85em;
+  line-height:1.1;
+  text-align:center;
+  white-space:nowrap;
 }
