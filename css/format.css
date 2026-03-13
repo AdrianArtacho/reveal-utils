@@ -202,3 +202,16 @@ position:absolute;
 border-radius:4px;
 pointer-events:none;
 }
+
+/* Moving highlight */
+.replacement-container{
+position:absolute;
+left:0;
+top:0;
+width:100%;
+height:100%;
+}
+
+.annot-highlight{
+border-radius:6px;
+}
