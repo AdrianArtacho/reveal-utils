@@ -306,3 +306,9 @@ Image annotation system
 position:absolute;
 pointer-events:none;
 }
+
+.annot-pin {
+    pointer-events:none;
+    transform-origin:center;
+    max-width:none;
+}
