@@ -396,3 +396,12 @@ pointer-events:none;
     top:145px;
     font-size:0.7em;
 }
+
+.music-accidental{
+    display:inline-block;
+
+    margin-left:-0.22em;
+    margin-right:-0.04em;
+
+    vertical-align:0.02em;
+}
