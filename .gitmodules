@@ -1,3 +1,6 @@
 [submodule "reveal-source"]
 	path = reveal.js
 	url = https://github.com/hakimel/reveal.js
+[submodule "reveal4live"]
+	path = reveal4live
+	url = https://github.com/AdrianArtacho/reveal4live.git
