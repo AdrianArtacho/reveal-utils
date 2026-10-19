@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Live MIDI keyboard</title>
+  <link rel="stylesheet" href="../css/midi-keyboard.css">
+  <script src="../js/midi-keyboard.js" defer></script>
+  <style>
+    body { margin: 0; background: #ecf0f2; color: #26353c; font: 18px/1.6 system-ui, sans-serif; }
+    main { max-width: 960px; margin: 9vh auto; padding: 24px; }
+    h1 { margin: 0 0 12px; font-size: clamp(28px, 5vw, 44px); line-height: 1.15; }
+    p { max-width: 760px; }
+    code { padding: 2px 5px; border-radius: 4px; background: #dfe7e9; }
+    .note { color: #516970; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Live MIDI keyboard</h1>
+    <p>Connect a MIDI keyboard, click <strong>Enable MIDI</strong>, and play.
+      Held notes light up together. This is the display inserted into Reveal slides
+      by <code>\midikeyboard</code>.</p>
+    <div class="midi-keyboard" data-midi-start="48" data-midi-keys="25"></div>
+    <p class="note">C3–C5 corresponds to MIDI notes 48–72; middle C is C4 (60).
+      The display follows your keys, including when the sustain pedal is down.
+      Reset lights clears a missed note release. No sound is generated.</p>
+    <p class="note">Use a browser with Web MIDI support and open this page over HTTPS
+      or at <code>http://localhost</code>.</p>
+  </main>
+</body>
+</html>
