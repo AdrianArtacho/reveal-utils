@@ -1,0 +1,101 @@
+/* Semantic rows retain the author's bold, italic, links and line breaks. */
+.semester-plan {
+  --semester-plan-accent: #006b68;
+  --semester-plan-current-background: rgba(17, 155, 132, 0.12);
+  --semester-plan-future-opacity: 0.72;
+  width: 100%;
+  max-height: min(70vh, 620px);
+  margin: 0.6em auto;
+  overflow: auto;
+  color: inherit;
+  font-family: inherit;
+  font-size: 0.62em;
+  line-height: 1.38;
+  text-align: left;
+  text-transform: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--semester-plan-accent) transparent;
+}
+
+.semester-plan *, .semester-plan *::before, .semester-plan *::after {
+  box-sizing: border-box;
+}
+
+.semester-plan:focus-visible {
+  outline: 2px solid var(--semester-plan-accent);
+  outline-offset: 4px;
+}
+
+.semester-plan table {
+  width: 100%;
+  margin: 0;
+  border-collapse: collapse;
+  table-layout: fixed;
+  color: inherit;
+  font: inherit;
+}
+
+.semester-plan table th,
+.semester-plan table td {
+  padding: 0.46em 0.65em;
+  border: 0;
+  border-bottom: 1px solid rgba(127, 127, 127, 0.28);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: anywhere;
+}
+
+.semester-plan table thead th {
+  border-top: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.semester-plan table th:first-child { width: 12%; }
+.semester-plan table th:nth-child(2),
+.semester-plan table th:nth-child(3) { width: 44%; }
+
+.semester-plan table tbody th {
+  font-weight: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+.semester-plan time { white-space: nowrap; }
+
+.semester-plan table tr.is-future { opacity: var(--semester-plan-future-opacity); }
+
+.semester-plan table tr.is-current > th,
+.semester-plan table tr.is-current > td {
+  background: var(--semester-plan-current-background);
+}
+
+.semester-plan table tr.is-current > th:first-child {
+  box-shadow: inset 3px 0 0 var(--semester-plan-accent);
+}
+
+.semester-plan-current-label {
+  display: block;
+  width: fit-content;
+  margin-top: 0.28em;
+  color: var(--semester-plan-accent);
+  font-size: 0.66em;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.semester-plan-current-label[hidden] { display: none; }
+
+/* A theme can override these variables without changing the row semantics. */
+@media (prefers-contrast: more) {
+  .semester-plan { --semester-plan-future-opacity: 1; }
+  .semester-plan table tr.is-current > th:first-child { box-shadow: inset 5px 0 0 currentColor; }
+}
+
+@media print {
+  .semester-plan { max-height: none; overflow: visible; }
+  .semester-plan table tr { break-inside: avoid; }
+  .semester-plan table tr.is-future { opacity: 1; }
+  .semester-plan table tr.is-current > th,
+  .semester-plan table tr.is-current > td { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+}

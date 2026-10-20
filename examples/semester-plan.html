@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Semesterplan · Musikanalyse</title>
+  <link rel="stylesheet" href="../css/semester-plan.css">
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; padding: 5vh 4vw; background: #fafaf8; color: #26353c;
+      font: 32px/1.4 system-ui, sans-serif; }
+    main { max-width: 1180px; margin: auto; }
+    h1 { margin: 0 0 0.2em; font-size: 1.15em; letter-spacing: -0.035em; }
+    .subtitle { margin: 0 0 1.8em; font-size: 0.55em; color: #526069; }
+    .preview { display: flex; align-items: center; gap: 0.75em; flex-wrap: wrap;
+      margin: 0 0 1em; font-size: 0.5em; }
+    input, button { font: inherit; border: 1px solid #b8c4c1; border-radius: 5px;
+      background: white; color: inherit; padding: 0.45em 0.65em; }
+    button { cursor: pointer; }
+    .semester-plan { background: white; }
+    .legend { font-size: 0.48em; color: #526069; }
+    @media (max-width: 620px) {
+      body { padding: 1.5em 0.7em; font-size: 27px; }
+      .semester-plan { overflow-x: auto; }
+      .semester-plan table { min-width: 590px; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Musikanalyse · Semesterplan</h1>
+  <p class="subtitle">Wintersemester 2026/27</p>
+  <div class="preview">
+    <label for="reference-date">Vorschau für</label>
+    <input id="reference-date" type="date" value="2026-10-20">
+    <button id="use-today" type="button">Heute verwenden</button>
+  </div>
+  <div class="semester-plan" data-semester-today="2026-10-20" role="region" aria-label="Semesterplan" tabindex="0">
+    <table>
+      <thead><tr>
+        <th scope="col">Woche</th>
+        <th scope="col">Zentrales Konzept / Analytische Perspektive</th>
+        <th scope="col">Repertoire</th>
+      </tr></thead>
+      <tbody>
+        <tr data-semester-date="2026-09-21">
+          <th scope="row"><time datetime="2026-09-21">21.9.</time><span class="semester-plan-current-label" hidden>aktuell</span></th>
+          <td><strong>Kick-off</strong>, Kurspräsentation</td><td></td>
+        </tr>
+        <tr data-semester-date="2026-09-28">
+          <th scope="row"><time datetime="2026-09-28">28.9.</time><span class="semester-plan-current-label" hidden>aktuell</span></th>
+          <td>Unterschiedliche analytische Perspektiven ausprobieren</td>
+          <td><em>Strawinsky</em> (Sacre du printemps)</td>
+        </tr>
+        <tr data-semester-date="2026-10-05">
+          <th scope="row"><time datetime="2026-10-05">5.10.</time><span class="semester-plan-current-label" hidden>aktuell</span></th>
+          <td>Impressionismus I</td>
+          <td><em>Lili Boulanger</em>, <em>Fauré</em>, <em>Debussy</em><br>[<strong>Sofya</strong>: d'un matin de printemps]</td>
+        </tr>
+        <tr data-semester-date="2026-10-12">
+          <th scope="row"><time datetime="2026-10-12">12.10.</time><span class="semester-plan-current-label" hidden>aktuell</span></th>
+          <td>Impressionismus II</td><td><em>Lili Boulanger</em>, <em>Fauré</em>, <em>Debussy</em></td>
+        </tr>
+        <tr data-semester-date="2026-10-19">
+          <th scope="row"><time datetime="2026-10-19">19.10.</time><span class="semester-plan-current-label" hidden>aktuell</span></th>
+          <td>Freie Atonalität; Motivik, Dramaturgie (keine Zwölftonanalyse)</td>
+          <td><em>Arnold Schönberg</em> (Nacht, Pierrot Lunaire) [<strong>Artur</strong>]</td>
+        </tr>
+        <tr data-semester-date="2026-11-09">
+          <th scope="row"><time datetime="2026-11-09">9.11.</time><span class="semester-plan-current-label" hidden>aktuell</span></th>
+          <td>Expressionismus / <em>Neue Sachlichkeit</em>.</td>
+          <td><em>Kurt Weill</em> / Bertold Brecht: Die Dreigroschenoper (1928), Seeräuber Jenny [<strong>Parsa / Adrian</strong>]</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="legend">Vergangene Termine bleiben normal lesbar, zukünftige sind etwas heller.
+    „Aktuell“ bezeichnet den letzten Termin bis zum gewählten Datum.</p>
+</main>
+<script src="../js/semester-plan.js"></script>
+<script>
+  const dateInput = document.getElementById("reference-date");
+  const plan = document.querySelector(".semester-plan");
+  dateInput.addEventListener("change", () => {
+    plan.setAttribute("data-semester-today", dateInput.value || "auto");
+  });
+  document.getElementById("use-today").addEventListener("click", () => {
+    dateInput.value = "";
+    plan.setAttribute("data-semester-today", "auto");
+  });
+</script>
+</body>
+</html>

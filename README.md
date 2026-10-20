@@ -154,3 +154,60 @@ node --test tests/*.test.js
 The tests simulate the YouTube API and Reveal lifecycle. Actual YouTube access,
 browser playback permission, and the presentation computer's sound output
 still need a live check.
+
+## Dated semester plans
+
+The `semesterplan` environment in
+[ltx_snippets](https://github.com/AdrianArtacho/ltx_snippets/blob/main/ltx/reveal/semesterplan.tex)
+uses one `\semesterrow{YYYY-MM-DD}{topic}{repertoire}` per session.
+[format-exchange](https://github.com/AdrianArtacho/format-exchange#dated-semester-plans)
+converts it into a table whose dates remain available to the browser.
+
+The latest scheduled date on or before today is the **current session**.
+Earlier sessions remain normal, future sessions are mildly muted, and the
+current row has a teal accent, pale background, and visible **aktuell** marker.
+Authored bold, italics, links, and line breaks remain intact. Before the first
+session every row is future; after the last, the last session remains current.
+Repeated dates share their state and rows retain their source order.
+
+The converter's template loads:
+
+```html
+<link rel="stylesheet" href="./reveal/css/semester-plan.css">
+<script src="./reveal/js/semester-plan.js"></script>
+```
+
+The wrapper's own `index.html` uses the equivalent `./css/` and `./js/` paths.
+Both assets work offline, with no Reveal plugin registration or new library.
+Update this checkout along with the converter and LaTeX snippet.
+
+Plans initialize on page load and when slide content is inserted later. The
+helper uses the presentation computer's **local calendar day**, updates at
+local midnight, and refreshes when the page regains focus or visibility.
+All live plans share a single timer. Invalid dates never roll into another month.
+
+An environment option such as `[today=2026-10-20]` emits
+`data-semester-today="2026-10-20"` and freezes that plan's reference date.
+The default is `data-semester-today="auto"`. The converter provides initial
+states for the export date; the runtime refreshes automatic plans on opening.
+The PDF remains a snapshot of its compilation date.
+
+For manual control, `window.RevealSemesterPlan.init(container)` discovers
+plans within a subtree, `.refresh()` updates their states, and `.destroy()`
+removes the observers, timer, and event listeners. Tables have a focusable
+scroll region; long plans remain readable without shrinking the type.
+
+CSS properties on `.semester-plan` control the accent, background, and future
+opacity: `--semester-plan-accent`, `--semester-plan-current-background`, and
+`--semester-plan-future-opacity`. The current label adds a cue beyond color.
+
+The [standalone example](examples/semester-plan.html) contains the six-session
+Musikanalyse plan and lets you preview another reference date. Run the checks:
+
+```sh
+node --test tests/semester-plan.test.js
+```
+
+Tests cover calendar/leap-year validation, date boundaries, local time and DST,
+duplicate dates, independent live/frozen plans, dynamic insertion, preserved
+cell content, and cleanup.
