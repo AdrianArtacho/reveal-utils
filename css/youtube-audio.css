@@ -1,0 +1,184 @@
+/* The timeline covers the selected excerpt, not the full source video. */
+.youtube-audio {
+  --youtube-accent: var(--r-link-color, #087c6c);
+  --youtube-track: #bdc5ca;
+  position: relative;
+  width: min(100%, 960px);
+  margin: 1em auto;
+  color: var(--r-main-color, #26353c);
+  font-family: var(--r-main-font, system-ui, sans-serif);
+  font-size: 18px;
+  line-height: 1.4;
+  text-align: left;
+  text-transform: none;
+}
+
+.youtube-audio *, .youtube-audio *::before, .youtube-audio *::after {
+  box-sizing: border-box;
+}
+
+.youtube-audio .youtube-audio__controls {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-height: 44px;
+}
+
+.youtube-audio button {
+  appearance: none;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+
+.youtube-audio .youtube-audio__play {
+  flex: 0 0 44px;
+  width: 44px;
+  height: 44px;
+  padding: 8px;
+  border: 1px solid var(--youtube-track);
+  border-radius: 50%;
+  color: var(--youtube-accent);
+  font-size: 20px;
+  line-height: 1;
+  text-align: center;
+}
+
+.youtube-audio .youtube-audio__timeline {
+  --youtube-progress: 0%;
+  appearance: none;
+  -webkit-appearance: none;
+  flex: 1 1 auto;
+  min-width: 40px;
+  height: 4px;
+  margin: 16px 0;
+  padding: 0;
+  border: 0;
+  border-radius: 2px;
+  background: linear-gradient(to right, var(--youtube-accent) 0 var(--youtube-progress),
+    var(--youtube-track) var(--youtube-progress) 100%);
+  cursor: pointer;
+}
+
+.youtube-audio .youtube-audio__timeline::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 13px;
+  height: 22px;
+  border: 2px solid var(--r-background-color, #fff);
+  border-radius: 4px;
+  background: var(--youtube-accent);
+  box-shadow: 0 0 0 1px var(--youtube-accent);
+}
+
+.youtube-audio .youtube-audio__timeline::-moz-range-thumb {
+  width: 9px;
+  height: 18px;
+  border: 2px solid var(--r-background-color, #fff);
+  border-radius: 4px;
+  background: var(--youtube-accent);
+  box-shadow: 0 0 0 1px var(--youtube-accent);
+}
+
+.youtube-audio .youtube-audio__timeline:disabled {
+  cursor: default;
+  opacity: 0.6;
+}
+
+.youtube-audio button:focus-visible,
+.youtube-audio input:focus-visible,
+.youtube-audio a:focus-visible {
+  outline: 2px solid var(--youtube-accent);
+  outline-offset: 5px;
+}
+
+.youtube-audio .youtube-audio__time {
+  flex: 0 0 auto;
+  font-size: 0.8em;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.youtube-audio .youtube-audio__caption {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px 16px;
+  margin: 4px 0 0 58px;
+  font-size: 0.65em;
+  opacity: 0.75;
+}
+
+.youtube-audio .youtube-audio-source,
+.youtube-audio .youtube-audio__show-video {
+  color: inherit;
+  font-size: inherit;
+  text-decoration: none;
+}
+
+.youtube-audio .youtube-audio__show-video {
+  padding: 3px 0;
+}
+
+.youtube-audio .youtube-audio-source:hover,
+.youtube-audio .youtube-audio__show-video:hover {
+  text-decoration: underline;
+}
+
+.youtube-audio .youtube-audio__status {
+  margin: 10px 0 0 58px;
+  font-size: 0.75em;
+  overflow-wrap: anywhere;
+}
+
+/* A normal YouTube video supplies playback; this is a compact presentation view,
+   not a separate audio stream. Show video exposes consent/errors/player controls. */
+.youtube-audio .youtube-audio__player {
+  position: absolute;
+  width: 320px;
+  height: 200px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  pointer-events: none;
+}
+
+.youtube-audio .youtube-audio__player iframe {
+  display: block;
+  width: 320px;
+  height: 200px;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  border: 0;
+}
+
+.youtube-audio .youtube-audio__player.is-visible {
+  position: relative;
+  width: 100%;
+  min-width: 200px;
+  height: auto;
+  min-height: 200px;
+  margin-top: 18px;
+  aspect-ratio: 16 / 9;
+  clip-path: none;
+  pointer-events: auto;
+}
+
+.youtube-audio .youtube-audio__player.is-visible iframe {
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  aspect-ratio: 16 / 9;
+}
+
+@media print {
+  .youtube-audio .youtube-audio__play,
+  .youtube-audio .youtube-audio__show-video,
+  .youtube-audio .youtube-audio__player,
+  .youtube-audio .youtube-audio__status { display: none; }
+  .youtube-audio .youtube-audio__caption { margin-left: 0; }
+}

@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>YouTube excerpt timeline</title>
+  <link rel="stylesheet" href="../reveal.js/dist/reveal.css">
+  <link rel="stylesheet" href="../reveal.js/dist/theme/white.css">
+  <link rel="stylesheet" href="../css/youtube-audio.css">
+</head>
+<body>
+  <div class="reveal"><div class="slides">
+    <section>
+      <h2>Listen to an excerpt</h2>
+      <p>Press Next to start. Next again advances the slide.</p>
+      <div class="youtube-audio" data-video-id="M7lc1UVf-VE" data-start="20" data-end="40">
+        <a class="youtube-audio-source" href="https://www.youtube.com/watch?v=M7lc1UVf-VE&amp;t=20s" target="_blank" rel="noopener">YouTube audio · 0:20–0:40</a>
+      </div>
+      <p style="font-size:0.45em">The line represents only these 20 seconds. You can seek or pause.
+        Use Show video if YouTube needs interaction. Internet access is required.</p>
+    </section>
+    <section>
+      <h2>Playback stops when you leave</h2>
+      <p>Go back to replay the excerpt from its beginning.</p>
+    </section>
+  </div></div>
+  <script src="../reveal.js/dist/reveal.js"></script>
+  <script src="../js/youtube-media.js"></script>
+  <script>
+    const deck = new Reveal({ hash: true });
+    RevealYouTubeMedia.attach(deck);
+    deck.initialize();
+  </script>
+</body>
+</html>

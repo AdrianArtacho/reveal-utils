@@ -67,3 +67,90 @@ These tests use mocked MIDI ports to check polyphony, channel/device isolation,
 release messages, sustain behavior, hotplug, permission states, reset, and coexistence
 with other MIDI handlers. A physical MIDI keyboard and browser permission prompt
 remain part of a live classroom check.
+
+## YouTube excerpt playback
+
+`js/youtube-media.js` is the shared playback handler for the existing
+`\youtube[start-end]{VIDEO_ID}` and the compact
+`\youtubeaudio[start-end]{VIDEO_ID}` macros. The audio-style presentation shows
+a horizontal line, moving playhead, play/pause button and excerpt-relative
+time. For `[0:20-1:24]`, the line spans 64 seconds; it does not include the rest
+of the source video. Clicking or dragging the line seeks within those bounds.
+
+The matching [LaTeX snippet](https://github.com/AdrianArtacho/ltx_snippets/blob/main/ltx/reveal/youtubeaudio.tex)
+and [converter](https://github.com/AdrianArtacho/format-exchange#youtube-audio-excerpts)
+provide the source and export integration. The converter's template loads:
+
+```html
+<link rel="stylesheet" href="./reveal/css/youtube-audio.css">
+<script src="./reveal/js/youtube-media.js"></script>
+```
+
+Then attach the handler before starting Reveal:
+
+```js
+const deck = new Reveal({ hash: true, plugins });
+const youtubeMedia = window.RevealYouTubeMedia.attach(deck);
+deck.initialize();
+```
+
+The handler loads the YouTube IFrame API once when it finds media. Remove any
+older template-specific YouTube player initialization when adopting this
+handler; a player should have only one owner. For slides inserted later,
+`youtubeMedia.refresh()` discovers them, and `youtubeMedia.destroy()` releases
+the handlers and players. The wrapper's `index.html` already handles its
+asynchronous slide fetch.
+
+The converter emits a placeholder like this:
+
+```html
+<div class="youtube-audio" data-video-id="8cItW8_RMNo"
+     data-start="20" data-end="84">
+  <a class="youtube-audio-source"
+     href="https://www.youtube.com/watch?v=8cItW8_RMNo&amp;t=20s"
+     target="_blank" rel="noopener">YouTube audio · 0:20–1:24 (1:04)</a>
+</div>
+```
+
+Omit `data-end` or leave it empty to use the video's duration. All bounds are
+source seconds. The progress display subtracts the selected start and clamps
+to the selected end or the video's duration, whichever comes first. The
+runtime uses YouTube's reported clock and periodically enforces the endpoint,
+including after a seek; it is not suitable for sample-accurate audio cues.
+
+On entering a slide, excerpts are prepared at their start and paused. The first
+Next action starts playback: `→`, `Space`, `PageDown`, `N`, on-screen right/down
+controls, or `deck.next()` (including OSC `/slide/next`). Next during playback
+can advance normally. Leaving the slide pauses playback; returning resets the
+excerpt. After the excerpt completes, Next advances. Widget buttons, timeline
+input, MIDI controls and text fields retain their own keyboard behavior.
+Use one excerpt per slide for a straightforward presentation sequence.
+
+### Browser and YouTube behaviour
+
+Serve slides over HTTPS or localhost, with internet access and an embeddable
+video. The compact view still loads a normal YouTube video player; it does not
+download, extract, or cache an audio file. YouTube's
+[developer policies](https://developers.google.com/youtube/terms/developer-policies#i.-additional-prohibitions)
+require the player to be visible and prohibit background-player features.
+Consequently this hidden view is not an officially supported audio-only
+integration. **Show video** reveals the normal player for consent, playback
+controls, or diagnostics; use the regular `\youtube` macro for a visible embed.
+
+Browser autoplay policies can require a direct click, particularly when a
+remote OSC command starts playback. The widget keeps a play button and source
+link available, and blocked/failed playback does not trap slide navigation.
+YouTube ads, embedding restrictions, and network delays remain applicable.
+The [IFrame API reference](https://developers.google.com/youtube/iframe_api_reference)
+documents playback events and timing behaviour.
+
+The [audio excerpt example](examples/youtube-audio.html) uses these same assets.
+Run the runtime checks with:
+
+```sh
+node --test tests/*.test.js
+```
+
+The tests simulate the YouTube API and Reveal lifecycle. Actual YouTube access,
+browser playback permission, and the presentation computer's sound output
+still need a live check.

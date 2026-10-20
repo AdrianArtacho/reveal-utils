@@ -14,6 +14,7 @@
   <!-- Your overrides -->
   <link rel="stylesheet" href="./css/icons.css">
   <link rel="stylesheet" href="./css/midi-keyboard.css">
+  <link rel="stylesheet" href="./css/youtube-audio.css">
 </head>
 
 <body>
@@ -23,11 +24,17 @@
 
   <script src="./reveal.js/dist/reveal.js"></script>
   <script src="./js/midi-keyboard.js"></script>
+  <script src="./js/youtube-media.js"></script>
   <script>
+    const youtubeMedia = window.RevealYouTubeMedia.attach(Reveal);
     Reveal.initialize({ hash: true });
     fetch('../slides.html')
       .then(r => r.text())
-      .then(html => document.getElementById('slides').innerHTML = html);
+      .then(html => {
+        document.getElementById('slides').innerHTML = html;
+        Reveal.sync();
+        youtubeMedia.refresh();
+      });
   </script>
 </body>
 </html>
