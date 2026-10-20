@@ -2,7 +2,7 @@
 
 const test = require("node:test");
 const assert = require("node:assert/strict");
-const { parseISODate, localISODate, classifyDates, millisecondsToMidnight, createRuntime } =
+const { parseISODate, localISODate, parseAutoDays, addCalendarDays, classifyDates, millisecondsToMidnight, createRuntime } =
   require("../js/semester-plan.js");
 
 class Element extends EventTarget {
@@ -140,6 +140,53 @@ test("repeated dates share the current state without sorting rows", () => {
   assert.deepEqual(classifyDates([], "2026-10-20"), []);
 });
 
+test("auto offsets accept nonnegative whole days and whitespace but not arbitrary expressions", () => {
+  for (const [value, expected] of [["auto", 0], ["auto+0", 0], ["auto+7", 7],
+    [" auto + 007 ", 7], ["auto+3652058", 3652058], ["auto+" + "0".repeat(100) + "7", 7]]) {
+    assert.equal(parseAutoDays(value), expected, value);
+  }
+  for (const value of ["auto-7", "auto+-7", "auto+7.5", "auto+7+1", "auto+1e2", "auto+",
+    "auto+3652059", "auto+" + "9".repeat(100), "AUTO+7", "2026-10-20+7", "", null]) {
+    assert.equal(parseAutoDays(value), null, String(value));
+  }
+});
+
+test("lookahead retains the reached session and marks every future date through day seven", () => {
+  const dates = ["2026-10-28", "2026-10-12", "2026-10-19", "2026-10-21",
+    "2026-10-27", "2026-10-24", "2026-10-19", "2026-10-27"];
+  assert.deepEqual(classifyDates(dates, "2026-10-20", 7), ["is-future", "is-past", "is-current",
+    "is-current", "is-current", "is-current", "is-current", "is-current"]);
+  assert.deepEqual(classifyDates(dates, "2026-10-20", 0), classifyDates(dates, "2026-10-20"));
+  assert.deepEqual(classifyDates(["2026-10-25", "2026-10-27", "2026-10-28"], "2026-10-20", 7),
+    ["is-current", "is-current", "is-future"]);
+  assert.deepEqual(classifyDates(dates, "2027-01-01", 7), classifyDates(dates, "2027-01-01"));
+});
+
+test("calendar addition crosses months, years and Gregorian leap days without rolling invalid dates", () => {
+  for (const [start, days, end] of [
+    ["2026-10-28", 7, "2026-11-04"], ["2026-12-28", 7, "2027-01-04"],
+    ["2024-02-25", 7, "2024-03-03"], ["2024-02-28", 1, "2024-02-29"],
+    ["1900-02-28", 1, "1900-03-01"], ["2000-02-28", 1, "2000-02-29"],
+    ["0001-01-01", 0, "0001-01-01"], ["0099-12-31", 1, "0100-01-01"],
+    ["0001-01-01", 3652058, "9999-12-31"], ["9999-12-24", 7, "9999-12-31"]
+  ]) assert.equal(addCalendarDays(start, days), end, `${start} + ${days}`);
+  for (const [start, days] of [["9999-12-25", 7], ["2026-02-29", 7], ["2026-10-20", -7],
+    ["2026-10-20", 0.5], ["2026-10-20", "7"], ["2026-10-20", 3652059]]) {
+    assert.equal(addCalendarDays(start, days), null);
+    assert.deepEqual(classifyDates(["2026-10-19"], start, days), [null]);
+  }
+});
+
+test("seven calendar days preserve the intended cutoff across DST and local/UTC midnight", () => {
+  inTimeZone("Europe/Vienna", () => {
+    assert.equal(addCalendarDays(localISODate(new Date(2026, 2, 25, 0, 30)), 7), "2026-04-01");
+    assert.equal(addCalendarDays(localISODate(new Date(2026, 9, 20, 0, 30)), 7), "2026-10-27");
+  });
+  inTimeZone("Pacific/Honolulu", () => {
+    assert.equal(addCalendarDays(localISODate(new Date("2026-10-20T00:30:00Z")), 7), "2026-10-26");
+  });
+});
+
 test("local day does not accidentally use UTC near midnight", () => {
   assert.equal(localISODate(new Date(2026, 9, 20, 1)), "2026-10-20");
   inTimeZone("Pacific/Honolulu", () => {
@@ -194,6 +241,31 @@ test("live plans advance at midnight without rebuilding the slides", () => {
   f.runtime.destroy();
 });
 
+test("auto+7 is live at midnight and focus, keeps several aktuell markers, and leaves fixed plans independent", () => {
+  const dates = ["2026-10-19", "2026-10-21", "2026-10-27", "2026-10-28", "2026-10-29"];
+  const root = plan(dates, " auto + 007 "), fixed = plan(dates, "2026-10-20");
+  const f = fixture(root, fixed);
+  assert.deepEqual(states(root), ["is-current", "is-current", "is-current", "is-future", "is-future"]);
+  assert.deepEqual(states(fixed), ["is-current", "is-future", "is-future", "is-future", "is-future"]);
+  assert.equal(root.getAttribute("data-semester-reference-date"), "2026-10-20");
+  assert.equal(root.getAttribute("data-semester-through-date"), "2026-10-27");
+  assert.equal(f.timers.size, 1);
+  assert.equal([...f.timers.values()][0].delay, millisecondsToMidnight(f.now()));
+  assert.deepEqual(root.body.children.map(node => node.querySelector(".semester-plan-current-label").hidden),
+    [false, false, false, true, true]);
+  f.setDate(new Date(2026, 9, 21, 0, 0, 1));
+  f.expire();
+  assert.deepEqual(states(root), ["is-past", "is-current", "is-current", "is-current", "is-future"]);
+  assert.equal(root.getAttribute("data-semester-reference-date"), "2026-10-21");
+  assert.equal(root.getAttribute("data-semester-through-date"), "2026-10-28");
+  f.setDate(new Date(2026, 9, 22, 12));
+  f.host.dispatchEvent(new Event("focus"));
+  assert.deepEqual(states(root), ["is-past", "is-current", "is-current", "is-current", "is-current"]);
+  assert.equal(root.getAttribute("data-semester-through-date"), "2026-10-29");
+  assert.deepEqual(states(fixed), ["is-current", "is-future", "is-future", "is-future", "is-future"]);
+  f.runtime.destroy();
+});
+
 test("focus, visibility and pageshow recover after sleep or a changed computer date", () => {
   const root = plan(["2026-10-19", "2026-10-21"]);
   const f = fixture(root);
@@ -230,6 +302,32 @@ test("async slide insertion, changed dates and added rows are discovered", () =>
   future.setAttribute("data-semester-date", "2026-12-01");
   f.mutation({ target: future, type: "attributes" });
   assert.deepEqual(states(root), ["is-current", "is-future"]);
+  f.runtime.destroy();
+});
+
+test("inserted auto+7 plans and changed offsets refresh the window and timer", () => {
+  const f = fixture();
+  const root = plan(["2026-10-19", "2026-10-27", "2026-10-28"], "auto+7");
+  f.document.documentElement.append(root);
+  f.mutation({ target: f.document.documentElement, addedNodes: [root], removedNodes: [] });
+  assert.deepEqual(states(root), ["is-current", "is-current", "is-future"]);
+  assert.equal(f.timers.size, 1);
+  root.setAttribute("data-semester-today", "auto+0");
+  f.mutation({ target: root, type: "attributes" });
+  assert.deepEqual(states(root), ["is-current", "is-future", "is-future"]);
+  assert.equal(root.getAttribute("data-semester-through-date"), "2026-10-20");
+  assert.equal(f.timers.size, 1);
+  root.setAttribute("data-semester-today", "auto-7");
+  f.mutation({ target: root, type: "attributes" });
+  assert.deepEqual(states(root), [null, null, null]);
+  assert.equal(root.getAttribute("data-semester-error"), "invalid-reference-date");
+  assert.equal(root.getAttribute("data-semester-reference-date"), null);
+  assert.equal(root.getAttribute("data-semester-through-date"), null);
+  assert.equal(f.timers.size, 0);
+  root.setAttribute("data-semester-today", "auto+3652058");
+  f.mutation({ target: root, type: "attributes" });
+  assert.deepEqual(states(root), [null, null, null]);
+  assert.equal(root.getAttribute("data-semester-error"), "invalid-reference-date");
   f.runtime.destroy();
 });
 

@@ -3,6 +3,7 @@
   "use strict";
 
   var STATES = ["is-past", "is-current", "is-future"];
+  var MAX_LOOKAHEAD_DAYS = 3652058; // Days between 0001-01-01 and 9999-12-31.
 
   function parseISODate(value) {
     if (typeof value !== "string") return null;
@@ -24,17 +25,43 @@
       String(now.getDate()).padStart(2, "0");
   }
 
-  function classifyDates(dates, reference) {
+  function parseAutoDays(value) {
+    if (typeof value !== "string") return null;
+    var match = /^auto(?:\s*\+\s*([0-9]+))?$/.exec(value.trim());
+    if (!match) return null;
+    var days = Number(match[1] || 0);
+    return Number.isInteger(days) && days <= MAX_LOOKAHEAD_DAYS ? days : null;
+  }
+
+  function addCalendarDays(reference, days) {
+    var value = parseISODate(reference);
+    if (value === null || !Number.isInteger(days) || days < 0 || days > MAX_LOOKAHEAD_DAYS) return null;
+    // Start with the local civil date, then do Gregorian calendar arithmetic
+    // independently of time zones. Adding elapsed milliseconds would cross DST
+    // incorrectly; setUTCFullYear also avoids the Date constructor's 1900 rule.
+    var calendar = new Date(0);
+    calendar.setUTCFullYear(Math.floor(value / 10000), Math.floor(value / 100) % 100 - 1, value % 100);
+    calendar.setUTCDate(calendar.getUTCDate() + days);
+    var year = calendar.getUTCFullYear();
+    if (year > 9999) return null;
+    return String(year).padStart(4, "0") + "-" +
+      String(calendar.getUTCMonth() + 1).padStart(2, "0") + "-" +
+      String(calendar.getUTCDate()).padStart(2, "0");
+  }
+
+  function classifyDates(dates, reference, lookaheadDays) {
+    if (lookaheadDays === undefined) lookaheadDays = 0;
     var today = parseISODate(reference);
+    var through = parseISODate(addCalendarDays(reference, lookaheadDays));
     var values = dates.map(parseISODate);
     var current = null;
-    if (today === null) return dates.map(function () { return null; });
+    if (today === null || through === null) return dates.map(function () { return null; });
     values.forEach(function (value) {
       if (value !== null && value <= today && (current === null || value > current)) current = value;
     });
     return values.map(function (value) {
       if (value === null) return null;
-      if (value === current) return "is-current";
+      if (value === current || (value > today && value <= through)) return "is-current";
       return value < today ? "is-past" : "is-future";
     });
   }
@@ -55,24 +82,33 @@
     var started = false;
     var destroyed = false;
 
+    function todayOption(root) {
+      return (root.getAttribute("data-semester-today") || "auto").trim() || "auto";
+    }
+
     function isAuto(root) {
-      var value = (root.getAttribute("data-semester-today") || "auto").trim();
-      return value === "auto" || value === "";
+      return parseAutoDays(todayOption(root)) !== null;
     }
 
     function paint(root, now) {
-      var reference = isAuto(root) ? localISODate(now) : root.getAttribute("data-semester-today").trim();
+      var option = todayOption(root);
+      var lookaheadDays = parseAutoDays(option);
+      var reference = lookaheadDays !== null ? localISODate(now) : option;
+      if (lookaheadDays === null) lookaheadDays = 0;
+      var through = addCalendarDays(reference, lookaheadDays);
       var rows = Array.from(root.querySelectorAll("tbody tr[data-semester-date]")).filter(function (row) {
         return row.closest(".semester-plan") === root;
       });
       var dates = rows.map(function (row) { return row.getAttribute("data-semester-date"); });
-      var states = classifyDates(dates, reference);
-      var validReference = parseISODate(reference) !== null;
+      var states = classifyDates(dates, reference, lookaheadDays);
+      var validReference = through !== null;
       if (validReference) {
         root.setAttribute("data-semester-reference-date", reference);
+        root.setAttribute("data-semester-through-date", through);
         root.removeAttribute("data-semester-error");
       } else {
         root.removeAttribute("data-semester-reference-date");
+        root.removeAttribute("data-semester-through-date");
         root.setAttribute("data-semester-error", "invalid-reference-date");
       }
       rows.forEach(function (row, index) {
@@ -202,6 +238,7 @@
   if (typeof module === "object" && module.exports) {
     module.exports = {
       parseISODate: parseISODate, localISODate: localISODate, classifyDates: classifyDates,
+      parseAutoDays: parseAutoDays, addCalendarDays: addCalendarDays,
       millisecondsToMidnight: millisecondsToMidnight, createRuntime: createRuntime
     };
     return;

@@ -163,12 +163,22 @@ uses one `\semesterrow{YYYY-MM-DD}{topic}{repertoire}` per session.
 [format-exchange](https://github.com/AdrianArtacho/format-exchange#dated-semester-plans)
 converts it into a table whose dates remain available to the browser.
 
-The latest scheduled date on or before today is the **current session**.
+By default, the latest scheduled date on or before today is the **current session**.
 Earlier sessions remain normal, future sessions are mildly muted, and the
 current row has a teal accent, pale background, and visible **aktuell** marker.
 Authored bold, italics, links, and line breaks remain intact. Before the first
 session every row is future; after the last, the last session remains current.
 Repeated dates share their state and rows retain their source order.
+
+Set `\begin{semesterplan}[today=auto+7]` to highlight the coming week as well.
+The current session stays **aktuell**, and every upcoming row through today
+plus seven calendar days gets the same highlight and marker. Day seven is
+included; later rows stay muted. On 20 October, rows on 21, 26, and 27 October
+are included, while 28 October remains future. Before the first session, rows
+within the upcoming window can already be current. `auto+N` accepts a
+nonnegative whole number of days; `auto+0` is equivalent to `auto`. Month/year
+boundaries, leap years, and daylight-saving changes use calendar-day arithmetic;
+the resulting year must remain within 0001–9999.
 
 The converter's template loads:
 
@@ -188,9 +198,12 @@ All live plans share a single timer. Invalid dates never roll into another month
 
 An environment option such as `[today=2026-10-20]` emits
 `data-semester-today="2026-10-20"` and freezes that plan's reference date.
-The default is `data-semester-today="auto"`. The converter provides initial
-states for the export date; the runtime refreshes automatic plans on opening.
-The PDF remains a snapshot of its compilation date.
+The default is `data-semester-today="auto"`; `[today=auto+7]` emits
+`data-semester-today="auto+7"` and remains live, with the upcoming window
+advancing at local midnight or when returning to the page. The converter
+provides initial states for the export date; the runtime refreshes automatic
+plans on opening. PDFs remain snapshots of the compilation date and Markdown
+of the export date, using the same upcoming window when requested.
 
 For manual control, `window.RevealSemesterPlan.init(container)` discovers
 plans within a subtree, `.refresh()` updates their states, and `.destroy()`
@@ -208,6 +221,6 @@ Musikanalyse plan and lets you preview another reference date. Run the checks:
 node --test tests/semester-plan.test.js
 ```
 
-Tests cover calendar/leap-year validation, date boundaries, local time and DST,
+Tests cover calendar/leap-year validation, inclusive upcoming windows, date boundaries, local time and DST,
 duplicate dates, independent live/frozen plans, dynamic insertion, preserved
 cell content, and cleanup.
