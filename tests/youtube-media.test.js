@@ -343,8 +343,36 @@ test("touch navigation starts media once and suppresses its duplicate end/click 
   d.manager.destroy();
 });
 
+test("Down starts only the current vertical slide's media and releases navigation during playback", () => {
+  const first = setup();
+  const second = setup();
+  first.state.onReady(first.player);
+  second.state.onReady(second.player);
+  const d = deckFixture();
+  d.add(first);
+  const secondElement = d.add(second);
+  secondElement.slide = d.slideB;
+  let prevented = 0;
+  const event = { key: "ArrowDown", target: { closest: () => null },
+    preventDefault() { prevented++; }, stopImmediatePropagation() {} };
+  d.listeners.get("keydown")(event);
+  assert.equal(prevented, 1);
+  assert.deepEqual(first.calls.at(-1), ["play"]);
+  assert.equal(second.calls.some(call => call[0] === "play"), false);
+  first.state.onStateChange({ data: 1 });
+  d.listeners.get("keydown")(event);
+  assert.equal(prevented, 1, "playing media must let the next Down reach Reveal");
+  d.deck.current = d.slideB;
+  d.events.get("slidechanged")();
+  assert.deepEqual(first.calls.at(-1), ["pause"]);
+  d.listeners.get("keydown")(event);
+  assert.equal(prevented, 2);
+  assert.deepEqual(second.calls.at(-1), ["play"]);
+  d.manager.destroy();
+});
+
 test("widget keyboard handling preserves native controls without bubbling into Reveal", () => {
-  for (const key of [" ", "Enter", "ArrowRight", "Home", "End"]) {
+  for (const key of [" ", "Enter", "ArrowRight", "ArrowDown", "Home", "End"]) {
     let stopped = 0;
     let prevented = 0;
     keepWidgetKeys({ key, target: { closest: () => ({}) },

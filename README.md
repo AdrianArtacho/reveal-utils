@@ -2,6 +2,21 @@
 
 Shared local dependencies and presentation helpers for Adrián Artacho's Reveal slides.
 
+## Vertical slide stacks
+
+The [format-exchange converter](https://github.com/AdrianArtacho/format-exchange#nested-slides--vertical-stacks)
+turns a LaTeX `slide` containing direct child slides into a native Reveal vertical
+stack. The parent's own content is its first screen; each child is a separate
+screen underneath it. With `navigationMode: "default"`, Left/Right moves between
+horizontal topics, Up/Down moves within a stack, and Space/Next traverses all
+screens. Existing fragments and media playback steps still apply.
+
+No additional plugin is required. Keep this checkout updated with the converter
+so both Right and Down can start a YouTube excerpt on the current screen; leaving
+that screen pauses its player. Global and local TOC links use Reveal's native
+anchors to reach individual child slides. See the
+[Reveal documentation](https://revealjs.com/vertical-slides/) for navigation modes.
+
 ## Live MIDI keyboard
 
 The `\midikeyboard` macro in [ltx_snippets](https://github.com/AdrianArtacho/ltx_snippets/blob/main/ltx/reveal/midikeyboard.tex)
@@ -119,7 +134,7 @@ runtime uses YouTube's reported clock and periodically enforces the endpoint,
 including after a seek; it is not suitable for sample-accurate audio cues.
 
 On entering a slide, excerpts are prepared at their start and paused. The first
-Next action starts playback: `→`, `Space`, `PageDown`, `N`, on-screen right/down
+Next action starts playback: `→`, `↓`, `Space`, `PageDown`, `N`, on-screen right/down
 controls, or `deck.next()` (including OSC `/slide/next`). Next during playback
 can advance normally. Leaving the slide pauses playback; returning resets the
 excerpt. After the excerpt completes, Next advances. Widget buttons, timeline

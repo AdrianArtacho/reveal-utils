@@ -4,7 +4,7 @@
 
   var apiLoads = new WeakMap();
   var decks = new WeakMap();
-  var NEXT_KEYS = new Set(["ArrowRight", " ", "Spacebar", "PageDown", "n", "N"]);
+  var NEXT_KEYS = new Set(["ArrowRight", "ArrowDown", " ", "Spacebar", "PageDown", "n", "N"]);
 
   function formatTime(value) {
     var seconds = Math.max(0, Math.floor(Number(value) || 0));
@@ -350,7 +350,7 @@
 
   function keepWidgetKeys(event) {
     if (interactiveTarget(event.target) && (NEXT_KEYS.has(event.key) ||
-        ["Enter", "ArrowLeft", "ArrowUp", "ArrowDown", "Home", "End", "PageUp"].includes(event.key))) {
+        ["Enter", "ArrowLeft", "ArrowUp", "Home", "End", "PageUp"].includes(event.key))) {
       event.stopPropagation();
     }
   }

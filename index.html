@@ -29,7 +29,7 @@
   <script src="./js/semester-plan.js"></script>
   <script>
     const youtubeMedia = window.RevealYouTubeMedia.attach(Reveal);
-    Reveal.initialize({ hash: true });
+    Reveal.initialize({ hash: true, navigationMode: "default" });
     fetch('../slides.html')
       .then(r => r.text())
       .then(html => {
