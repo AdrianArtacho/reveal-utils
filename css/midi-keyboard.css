@@ -83,7 +83,7 @@
 
 .midi-keyboard .midi-keyboard__keys {
   position: relative;
-  height: 80px;
+  height: 104px;
   overflow: hidden;
   border: 2px solid #26353c;
   border-top-width: 4px;

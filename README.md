@@ -42,7 +42,7 @@ The generated slide contains:
 ```
 
 Place `\midikeyboard` immediately after the score in the same slide. The keys
-occupy an 80 px strip. The range, buttons, connection status and held notes
+occupy a 104 px strip. The range, buttons, connection status and held notes
 share a row beneath the keys and wrap when space is tight.
 
 Connect your MIDI keyboard, open the slides, click **Enable MIDI**, and allow MIDI
