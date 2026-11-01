@@ -41,6 +41,10 @@ The generated slide contains:
 <div class="midi-keyboard" data-midi-start="48" data-midi-keys="25"></div>
 ```
 
+Place `\midikeyboard` immediately after the score in the same slide. The keys
+occupy an 80 px strip. The range, buttons, connection status and held notes
+share a row beneath the keys and wrap when space is tight.
+
 Connect your MIDI keyboard, open the slides, click **Enable MIDI**, and allow MIDI
 access when prompted. This uses the browser's [Web MIDI API](https://www.w3.org/TR/webmidi/).
 Serve the slides over **HTTPS** (including GitHub Pages) or **http://localhost**;

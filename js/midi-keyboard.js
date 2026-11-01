@@ -225,7 +225,6 @@
     var start = numberAttribute(root, "data-midi-start", 48, 0, 127);
     var count = numberAttribute(root, "data-midi-keys", Math.min(25, 128 - start), 1, 128 - start);
     var range = noteName(start) + "–" + noteName(start + count - 1);
-    var header = element("div", "midi-keyboard__header");
     var label = element("span", "midi-keyboard__range", range + " · " + count + " keys");
     var actions = element("div", "midi-keyboard__actions");
     var enable = element("button", "midi-keyboard__enable", "Enable MIDI");
@@ -273,9 +272,8 @@
       board.appendChild(node);
     });
     actions.append(enable, reset);
-    header.append(label, actions);
-    footer.append(status, notes);
-    root.replaceChildren(header, board, footer);
+    footer.append(label, actions, status, notes);
+    root.replaceChildren(board, footer);
 
     var unsubscribe = manager.subscribe(function (state) {
       root.setAttribute("data-midi-state", state.phase);
